@@ -1,0 +1,24 @@
+---
+title: "1. Estadística Descriptiva"
+output: html_document
+date: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Introducción a la Estadística
+
+La estadística estudia **fenómenos aleatorios** que son aqeullos que, incluso en las mismas condiciones, pueden dar lugar a diferentes resultados.
+
+
+Con la **Estadística Descriptiva** aprendemos a describir los resultados de los fenómenos aleatorios y con la **Inferencia Estadística** aprenderemos a entenderlos y predecirlos, midiendo y controlando nuestros posibles erroes en términos de **Probabilidades**.
+
+#### Población e individuo
+
+#### Muestras aleatorias
+
+#### Variable aleatoria y modelo probabilístico
+
+## 2. Conceptos fundamentales de la Estadística descriptiva
