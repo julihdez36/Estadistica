@@ -2,6 +2,9 @@
 title: "1. Estadística Descriptiva"
 output: html_document
 date: ""
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -10,15 +13,180 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1. Introducción a la Estadística
 
-La estadística estudia **fenómenos aleatorios** que son aqeullos que, incluso en las mismas condiciones, pueden dar lugar a diferentes resultados.
+La estadística estudia **fenómenos aleatorios** que son aqeullos que,
+incluso en las mismas condiciones, pueden dar lugar a diferentes
+resultados.
 
-
-Con la **Estadística Descriptiva** aprendemos a describir los resultados de los fenómenos aleatorios y con la **Inferencia Estadística** aprenderemos a entenderlos y predecirlos, midiendo y controlando nuestros posibles erroes en términos de **Probabilidades**.
+Con la **Estadística Descriptiva** aprendemos a describir los resultados
+de los fenómenos aleatorios y con la **Inferencia Estadística**
+aprenderemos a entenderlos y predecirlos, midiendo y controlando
+nuestros posibles errores en términos de **Probabilidades**.
 
 #### Población e individuo
 
-#### Muestras aleatorias
+El conjunto de todos los individuos recibe el nombre de **población**.
+Croterios de inclusión y exclusión que definen el conjunto poblacional.
+Al conjunto de individuos que elegimos de la población lo denominaremos
+muestra. Habitualmente la muestra representativa se obtendrá por un
+procedimiento aleatorio (es decir, al azar) lo cual permitirá medir y
+controlar los posibles erroren en términos de probabilidades. Lo
+importante, mas que la aleatoriedad, es la representatividad de la
+muestra.
+
+Debe evitarse el sesgo de selección. Se busca la aleatoriedad en el
+muestreo, para lo que existen diferentes métodos estadísticos.
 
 #### Variable aleatoria y modelo probabilístico
 
+Las caracterísitcas de estudio se denominan **variable aleatoria X**.
+Sobre esta variable deseamos realizar inferencia estaídstica (estimación
+puntual, intervalos de confianza o pruebas de hipótesis), para lo cual
+se selecciona al azar una muestra de tamaño *n* en los que se observará
+la variable de estudio.
+
+Así, tendrémos *n* realizaciones de la variable aleatoria en estudio
+*X*, que representamos por $(x_1 , x_2 ,..., x_n)$ entendiéndose cada
+$x_i , i = 1, ..., n$ como el valor que toma la variable de estudio en
+le individuo seleccionado al azar en el *i-ésimo* lugar.
+
+Se considerarán solamente los casos en los que cada invididuo es
+seleccionado independiente e idéntitica a como lo son los demás, esto
+es,la muestra es **independiente e idénticamente distribuida (IDD)**, lo
+que quiere decir que (1) los elementos muestrales son todos eventos
+independientes, y, (2) todos los elementos de la muestra son tomados de
+la misma distribución de porbabilida.
+
+Los valores posibles de cada variable aleatoria junto con las
+probabilidades con los que los toma, se denomina distribución o ley de
+probabilidad de la variable aleatoria en estudio, o mas brevemente
+**modelo probabilístico**. Habitualmente se supondrá un modelo
+probabilístico que creemos refleja el fenómeno aleatorio que se está
+estudiando, obteniendo una simplificación de este, permitiendonos operar
+métodos matemáticos para la realización de inferencias.
+
+> En la Estadística Descriptiva no se hacen suposiciones extrañas a los
+> datos, como puede ser la de un modelo probabilístico poblacional: se
+> deja que los datos *hablen por sí mismos*. Por el contrario, las
+> técnicas de la Inferencia Estadística requerirán de suposiciones
+> ajenas a los datos (simetría en la distribución modelo, población
+> noraml, etcétera) (p. 42)
+
 ## 2. Conceptos fundamentales de la Estadística descriptiva
+
+Los individuos de una población poseen caracteres o características.
+Estos pueden ser cuantitativos (su observación se asocia a un valor
+numérico) o cualitativos (su valor se asocia a una clase determinada).
+Es habitual denominar a los caracteres variables estadísticas o
+simplemente variables.
+
+Los tipos o clases que pueden presentar los caracteres las denominamos
+*modalidades*, las cuales deben ser mutuamente excluyentes (disjuntas) y
+colectivamente exhaustivas.
+
+La información generalmente se organiza en una *Matriz de datos*
+
+| Individuo   | Carácter 1 | Carácter 2 | ... | Carácter p |
+|-------------|------------|------------|-----|------------|
+| Individuo 1 | Dato 1.1   | Dato 1.2   | ... | Dato 1.p   |
+| Individuo 2 | Dato 2.1   | Dato 2.2   | ... | Dato 2.p   |
+| ...         | ...        | ...        | ... | ...        |
+| Individuo n | Dato n.1   | Dato n.2   | ... | Dato n.p   |
+
+Un ejemplo lo vemos en el famóso conjunto de datos iris
+
+```{r}
+head(iris)
+```
+
+## Agrupamiento por intervalos
+
+Definamos los intervalos o *clases* como:
+
+$$[c_0 - c_1),[c_1 - c_2),...,[c_{j-1} - c_j)$$ En donde los extremos de
+la clases j-ésima son $c_{j-1}$ y $c_j$; la amplitud del intervalos será
+la diferencia de sus extremos; centro o marca de clase el punto medio
+del intervalo, al caso $c'_{j}=(c_{j} + c_{j-1})/2$.
+
+Como regla general podemos contruir intervalos de amplitud constante,
+$k$, el propuesto por Sturges (1962)
+
+$$k = 1 + 3.322log_{10}n$$
+
+```{r}
+
+
+# Calcular el número de intervalos según la regla de Sturges (logaritmo base 10)
+n <- length(mtcars$mpg)
+k <- ceiling(1 + 3.322 * log10(n))
+
+# Crear los intervalos
+breaks <- pretty(range(mtcars$mpg), n = k)
+intervals <- cut(mtcars$mpg, breaks, right = FALSE)
+
+# Calcular las frecuencias
+freq_table <- table(intervals)
+
+# Mostrar la tabla de frecuencias
+print(freq_table)
+
+
+```
+
+## Distribuciones unidimensionales de frecuencia
+
+-   **Frecuencia total:** número de datos *n*.
+-   **Frecuencia absoluta** $n_i$ de la modalidad $M_i$:
+
+$$\sum_{i=1}^k n_{i} = n_1 + n_2 + ... + n_k = n$$ - **Frecuencia
+relativa f_i:**
+
+Se define $f_i$
+
+$$f_{i} = \frac{n_i}{n}$$ Por lo que se puede verificar facilmente que:
+
+$$\sum_{i=1}^k f_{i} = f_1 + f_2 + ... + f_k = 1$$ - **Frecuencua
+absoluta acumulada** $N_i$:
+
+$$N_{i} = n_{1} + ... + n_{i} = \sum_{j=1}^i n_j$$ - **Frecuencua
+absoluta acumulada** $F_i$:
+
+$$F_{i} = f_{1} + ... + f_{i} = \sum_{j=1}^i f_j$$
+
+```{r}
+freq <- cbind(freq_table, round(freq_table / n,2), cumsum(freq_table), round(cumsum(freq_table / n),2))
+
+colnames(freq) <- c('ni','fi','Ni','Fi')
+freq
+
+```
+
+## Representaciones gráficas de las distribuciones unidimensionals de frecuencias
+
+### Variables cualitativas
+
+#### **Gráfico de sectores**
+
+```{r}
+set.seed(123)
+x2 <- sample(10,size = 4)
+n2 <- c('uno','dos','tres','cuatro')
+c2 <- c(2:5)
+
+pie(x2,labels = n2,col = c2,main = 'Gráfico de sectores')
+
+```
+
+
+
+
+
+
+#### **Gráfico de barras**
+
+```{r}
+
+barplot(x2,col = c2,main = 'Gráfico de barras')
+
+```
+
+
