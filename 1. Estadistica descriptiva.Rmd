@@ -140,15 +140,13 @@ print(freq_table)
 $$\sum_{i=1}^k n_{i} = n_1 + n_2 + ... + n_k = n$$ - **Frecuencia
 relativa f_i:**
 
-Se define $f_i$
-
 $$f_{i} = \frac{n_i}{n}$$ Por lo que se puede verificar facilmente que:
 
 $$\sum_{i=1}^k f_{i} = f_1 + f_2 + ... + f_k = 1$$ - **Frecuencua
 absoluta acumulada** $N_i$:
 
 $$N_{i} = n_{1} + ... + n_{i} = \sum_{j=1}^i n_j$$ - **Frecuencua
-absoluta acumulada** $F_i$:
+absoluta acumulada** $F_i$: Se define $f_i$
 
 $$F_{i} = f_{1} + ... + f_{i} = \sum_{j=1}^i f_j$$
 
@@ -176,11 +174,6 @@ pie(x2,labels = n2,col = c2,main = 'Gráfico de sectores')
 
 ```
 
-
-
-
-
-
 #### **Gráfico de barras**
 
 ```{r}
@@ -189,4 +182,267 @@ barplot(x2,col = c2,main = 'Gráfico de barras')
 
 ```
 
+### Variables cuantitativas
+
+#### **Histográmas**
+
+```{r}
+set.seed(123)
+x <- rnorm(100)
+hist(x, main = 'Histograma de frecuencia', freq = F, col= 'white')
+lines(density(x))
+```
+
+#### **Diagrama de hojas y ramas**
+
+*steam and leaft plot* fue inventado por Tukey (1977). Es especialmente
+útil para datos pequeños a medianos y proporciona una manera rápida de
+ver la distribución de los datos, similar a un histograma pero más
+simplificado y manual.
+
+```{r}
+stem(x)
+```
+
+#### Función de distribución empírica
+
+```{r}
+
+par(mfrow = c(1,2))
+
+n <- length(x)
+plot(sort(x), (1:n)/n,type = 's', main = 'Manual')
+
+# Forma 2
+
+ecdf_data <- ecdf(x)
+
+# Graficar el ECDF
+plot(ecdf_data, main = 'FDE',
+     xlab = "Valores", ylab = "Proporción Acumulada")
+
+```
+
+## Medidas de tendencia central
+
+**Media aritmética:**
+
+Dada una variable $X$ con un conjunto $n$ de observaciones
+$(x_{1},x_{2},...,x_{n})$ y $n_{i}$ la frecuencia absoluta, definimos la
+media aritmética:
+
+$$\mu = \frac{\sum_{i=1}^k x_{i}n_{i}}{n}$$
+
+Para datos sin agrupar, esto es con $n_{i} = 1$, podemos definir la
+media
+
+$$\mu = \frac{1}{n} \sum_{i=1}^n x_{i}$$ **Mediana:**
+
+La mediana se define como aquel valor de la variable tal que, supuestos
+ordenados los valores de ésta en orden creciente, la mitad son menores o
+iguales y la otra mitad mayores o iguales.
+
+La podemos definir como sigue:
+
+$$
+M_{e} =
+\begin{cases}
+x_{\left(\frac{n+1}{2}\right)} & \text{si } n \text{ es impar} \\[10pt]
+\frac{x_{\left(\frac{n}{2}\right)} + x_{\left(\frac{n}{2} + 1\right)}}{2} & \text{si } n \text{ es par}
+\end{cases}
+$$ **Moda:** La moda se define como aquel valor d ela variable al que
+corresponde máxima frecuencia (absoluta o relativa)
+
+Imaginemos un vector aleatorio
+
+```{r}
+set.seed(123)
+
+x <- sample(100,size = 100, replace = T)
+'Media:'; mean(x)
+'Mediana:'; median(x)
+
+# Creamos la función moda
+mode <- function(x) { 
+  ux <- unique(x)
+  ux[which.max(table(match(x, ux)))]
+}
+
+'Moda:'; mode(x)
+
+```
+
+## Medidas de localización
+
+**Cuantiles:**
+
+El cuantil $p_{r/k},r = 1,2,...,k-1$ se define como aquel valor de la
+variable que divide la distribución de frecuencias, previamente ordenada
+de forma creciente, en dos partes, estando el $(100*r/k)%$ de ésta
+formado por valores menores que $p_{r/k}$.
+
+Si $k=4$ los cuantiles reciben el nombre de *cuartiles*. Si $k=10$ los
+cuantiles reciben el nombre de *deciles*. Si $k=100$ los cuantiles
+reciben el nombre de *centiles*.
+
+La mediana $M_e$ es el segundo cuartil, o el quinto decil, etc. Su
+cálculo depende de si están o no agrupados los datos:
+
+Datos sin agrupar
+
+$$N_{j-1}<\frac{r}{k}n<N_{j}$$ El $e-ésimo$ cuantil de orden $k$ será
+$p_{r/k} = c_{j}$, valor al que corresponde la frecuencia absoluta
+acumulada de $N_{j}$.
+
+El cálculo de los cuartiles se puede hacer con la función *quantile*:
+
+```{r}
+print('Cuartiles:')
+quantile(x)
+```
+
+Los cuartiles nos permiten construir los Diagramas de caja o Box-plot,
+creados por Tukey (1977).
+
+El Box-plot representa una caja donde el lado inferir es el primer
+cuartil, el superiro el tercer cuartil. La caja aparece dividida por el
+segundo cuartil, o mediana. Finalmente, los "bigotes" representan siguen
+la regla de Tukey de 1.5IQR - Q1 y 1.5IQR + Q3. Los datos por fuera de
+estas referencias se conocen como datos atípicos o *outliers*.
+
+```{r}
+
+# Agreguemos datos atípicos
+
+x <- c(x,quantile(x,probs = .75)+1.65*IQR(x),
+       quantile(x,probs = .25)-1.65*IQR(x))
+
+# Grafiquemoslo
+boxplot(x,horizontal = T, main = "Box-plot")
+```
+
+**Rango intercuartílico:**
+
+El rango intercuartílico, o IQR, se define como la diferencia entre el
+primer cuartil (percentil 25) y el tercer cuartil (percentil 75). El 50%
+de datos centrales.
+
+```{r}
+quantile(x,probs = .75) - quantile(x,probs = .25)
+IQR(x)
+```
+
+## Medidas de dispersión
+
+Las medidas de dispersión tienen como propósito estudiar lo concentrada
+que está la distribución en torno a algún promedio. Veremos el rango o
+recoriddo, la varianza, la desviación típica y el coeficiente de
+variación de Pearson, estando definidas las tres primeras en unidades
+concretas y la cuarta en unidades abstractas (medida normalizada).
+
+**Recorrdio o rango:**
+
+$$R = x_{max} - X_{min}$$ **Varianza:**
+
+La varianza se define para datos poblacionales
+
+$$\sigma^2 = \frac{1}{n} \sum_{i=i}^k (x_{i} - \mu)^2$$ Se puede
+demostrar que
+
+$$\sigma^2 = \frac{1}{n} \sum_{i=i}^k x_{i}^2 n_{i} - \mu^2$$
+
+**Desviación estandar:** La varianza tienen un problema, y es que está
+expresada en unidades cuadradas. Para su interpretación suele utilizarse
+su raíz cuadrada, denominada desviación típica o estandar.
+
+$$\sigma^2 = \frac{1}{n} \sum_{i=i}^k \sqrt{(x_{i} - \mu)^2}$$
+
+**Coeficiente de variación de Pearson:**
+
+La desviación normalizada es una medida normalizada de la dispersión. Es
+una medida adimensional de la dispersión relativa de un conjunto de
+datos. Se calcula como el cociente entre la desviación estándar y la
+media del conjunto de datos, y se expresa como un porcentaje
+multiplicando el resultado por 100
+
+$$V_{p} = \frac{\sigma}{\mu}$$ Este coeficiente suele presentarse en
+términos porcentuales y permite evaluar la dispersión de manera
+sencilla. Convencionalmente se siguen los siguientes criterios de
+evaluación
+
+-   Entre 0% y 5%, la dispersión del conjunto de datos es mínima.
+-   Entre 5% y 15%, la dispersión del conjunto de datos es moderada.
+-   Superior a 15%, la dispersión del conjunto de datos es alta.
+
+
+```{r}
+diff(range(x))
+var(x)
+sd(x)
+
+cv <- function(x, na.rm = FALSE){
+  cv <- sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
+  return(cv)
+}
+
+cv(x)
+```
+
+
+### Medidas de forma
+
+**Coeficientes de asimetría**
+
+Diremos que una distribución es simétrica cuando su mediana, su moda y su media aritmética coincida. Diremos que una distribución es asimétrica a ala derecha su las frecuencias descienden más lentamente por la derecha que por la izquierda.
+
+Existen varias medidas de la asimetría de una distribución de frecuencia, siendo las dos mas famosas:
+
+**Coeficiente de asimetría de Pearson:**
+
+El *coeficiente de asimetría de Pearson* se define como
+
+$$A_{p} = \frac{\mu - M_{d}}{\sigma}$$
+
+**Coeficiente de asimetría de Fisher** El *coeficiente de asimetría de
+Fisher* es define como
+
+$$A_{f} = \frac{\sum_{i=1}^2 (x_{i}-\mu)^3 n_{i}}{n*\sigma^3}$$ 
+
+La interepretación de ambos coeficientes es análoga. La distribución es simétrica cuando vale cero, siendo el coeficiente positivo o negativo cuando exista asimetría a la derecha o izquierda respectivamente.
+
+```{r}
+
+library(psych)
+
+skew(x) # coeficiente de asimetría de Pearson
+
+
+library(moments)
+
+skewness(x) # coeficiente de asimetría de Fisher
+
+```
+**Curtosis:**
+
+La curtosis es una medida estadística que describe la forma de la distribución de datos en términos de la concentración de los datos en la cola de la distribución en comparación con una distribución normal estándar. En términos simples, indica qué tan "picuda" o "aplana" es la distribución en comparación con una distribución normal.
+
+
+$$
+Curtosis = \frac{1}{n} \sum_{i=1}^{n} \left( \frac{x_i - \bar{x}}{s} \right)^4 - 3
+$$
+
+Esta fórmula representa cómo se calcula la curtosis utilizando los momentos de cuarto orden de los datos, normalizados por la desviación estándar y ajustados por el factor -3 para comparar con una distribución normal estándar.
+
+```{r}
+library(moments)
+kurtosis(x)
+```
+###  Funciones de resumen de la información
+
+```{r}
+summary(x)
+
+library(psych)
+describe(x)
+```
 
