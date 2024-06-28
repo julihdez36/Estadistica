@@ -2,3 +2,4 @@
 * text=auto
 
 *.Rmd linguist-language=R
+*.html linguist-language=R
