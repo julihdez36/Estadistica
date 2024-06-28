@@ -446,3 +446,9 @@ library(psych)
 describe(x)
 ```
 
+
+## Distribuciones bidimensionales de frecuencias
+
+$$\sum_{i=1}^l \sum_{j=1}^k f_{ij} = 1$$
+
+Distribuciones marginales (avsolutas)
